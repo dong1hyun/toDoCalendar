@@ -1,22 +1,10 @@
 import styled from "styled-components";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { useMatch, useNavigate, useParams } from "react-router-dom"
 import { useRecoilState } from "recoil";
-import { selectedDate } from "../../atom";
-
-const CalendarWrapper = styled(motion.div)`
-  position: absolute;
-  padding: 10px;
-  width: 900px;
-  height: 620px;
-  border-radius: 10px;
-  top: 40px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  background-color: rgba(206, 214, 224,1.0);
-`;
+import { selectedDate } from "../atom";
+import CalendarWrapper from "./Components/Calendar";
 
 const Calendar = styled(motion.div)`
   display: grid;
@@ -34,14 +22,6 @@ const Dow = styled.span` //day of the week(요일)
   text-align: center;
   font-size: 30px;
 `
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-`;
 const SelectedYM = styled(motion.span)`
   display: inline-block;
   cursor: pointer;
@@ -52,6 +32,8 @@ const SelectedYM = styled(motion.span)`
 
 function Days() {
   const [date, setDate] = useRecoilState(selectedDate);
+  let start:number;
+  let end:number;
   const setCalendar = () => {
     const curMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0); //현재 달의 마지막 날짜 구하는 용도
     const curMonth2 = new Date(date.getFullYear(), date.getMonth(), 1); //현재 달의 시작 요일 구하는 용도
@@ -60,9 +42,11 @@ function Days() {
     for (let i = preMonth.getDate() - curMonth2.getDay() + 1; i <= preMonth.getDate(); i++) {
       cal.push(i);
     }
+    start = cal.length;
     for (let i = 1; i <= curMonth.getDate(); i++) {
       cal.push(i);
     }
+    end = cal.length;
     let j = 1;
     while (cal.length < 42) {
       cal.push(j++);
@@ -71,21 +55,19 @@ function Days() {
     return cal;
   }
   const navigate = useNavigate();
-  const onOverlayClicked = () => {
-    navigate("/");
-  }
   const { year, month } = useParams();
   const onYMClicked = () => {
     navigate(`/months/${year}`);
   }
+  const dayMatch = useMatch("/days/:year/:month");
+  const onDayClicked = (i:number) => {
+    const month = date.getMonth() + 1;
+    setDate(new Date(date.getFullYear() + ',' + month + ',' + i));
+    navigate("/");
+  }
+  let curMonth = false; 
   return (
     <AnimatePresence>
-      <Overlay
-        layoutId="overlay"
-        onClick={onOverlayClicked}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      />
       <CalendarWrapper
         key={CalendarWrapper}
         layoutId='calendar'
@@ -95,7 +77,7 @@ function Days() {
         <SelectedYM
           onClick={onYMClicked}
           whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>
-          {year + "년 " + month + "월"}
+          {dayMatch ? year + "년 " + month + "월" : null}
         </SelectedYM>
         <Calendar>
           <Dow style={{ color: "red" }}>일</Dow>
@@ -105,15 +87,21 @@ function Days() {
           <Dow>목</Dow>
           <Dow>금</Dow>
           <Dow style={{ color: "blue" }}>토</Dow>
-          {setCalendar().map((i, idx) => {
+          {setCalendar().map((i, idx) => { 
+            if(idx == start || idx == end) {
+              curMonth = !curMonth;
+            }
             if (idx % 7 == 0) {
-              return <Day key={idx} style={{ color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
+              if(curMonth) return <Day onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer', color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
+              else return <Day key={idx} style={{ opacity: 0.5, color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
             }
             else if ((1 + idx) % 7 == 0) {
-              return <Day key={idx} style={{ color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
+              if(curMonth) return <Day onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer', color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
+              else return <Day key={idx} style={{ opacity: 0.5, color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
             }
             else {
-              return <Day key={idx} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
+              if(curMonth) return <Day onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer'}} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
+              else return <Day key={idx} style={{ opacity: 0.5}} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
             }
           })}
         </Calendar>

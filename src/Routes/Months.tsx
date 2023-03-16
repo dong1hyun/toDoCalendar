@@ -2,20 +2,9 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil";
-import { selectedDate } from "../../atom";
+import { selectedDate } from "../atom";
+import CalendarWrapper from "./Components/Calendar";
 
-const CalendarWrapper = styled(motion.div)`
-  position: absolute;
-  padding: 10px;
-  width: 900px;
-  height: 620px;
-  border-radius: 10px;
-  top: 40px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  background-color: rgba(206, 214, 224,1.0);
-`;
 const Calendar = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -34,22 +23,12 @@ const Month = styled(motion.div)`
   padding-bottom: 25px;
   border-radius: 10px;
   font-size: 50px;
+  cursor: pointer;
 `
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-`;
 
 function Months() {
     const [date, setDate] = useRecoilState(selectedDate);
     const navigate = useNavigate();
-    const onOverlayClicked = () => {
-        navigate("/");
-    }
     const onMonthClicked = (i: number) => {
         setDate(new Date(date.getFullYear() + ', ' + i)); //월이 -1 되는 현상이 있는데 원인 발견 못했음
         navigate(`/days/${date.getFullYear()}/${i}`);
@@ -59,12 +38,6 @@ function Months() {
     }
     return (
         <>
-            <Overlay
-                layoutId="overlay"
-                onClick={onOverlayClicked}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-            />
             <CalendarWrapper layoutId="calendar">
                 <SelectedY
                     whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}

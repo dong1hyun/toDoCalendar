@@ -2,26 +2,29 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 import styled from "styled-components"
 import { useNavigate, useMatch } from "react-router-dom"
-import Days from './Components/Days';
+import Days from './Days';
 import { useRecoilState } from 'recoil';
 import { selectedDate } from '../atom';
-import Months from './Components/Months';
-import Years from './Components/Years';
+import Months from './Months';
+import Years from './Years';
+import ToDos from './ToDos';
 
-const Wrapper = styled.div`
-`
 const SelectedDate = styled(motion.span)`
+  position: absolute;
   cursor: pointer;
   padding: 30px;
   font-size: 50px;
   display:inline-block;
+  top: 250px;
 `;
-
-const Test = styled(motion.div)`
-  
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
 `;
-
-const DaysVariants = {}
 
 function Home() {
   const [date, setDate] = useRecoilState(selectedDate);
@@ -29,6 +32,9 @@ function Home() {
   const onDateClicked = (year: number, month: number) => {
     navigate(`/days/${year}/${month}`);
   };
+  const onOverlayClicked = () => {
+    navigate("/");
+  }
   const getDay = (n: number) => {
     switch (n) {
       case 0:
@@ -54,42 +60,56 @@ function Home() {
     return selectedDate;
   }
 
-  const calMatch = useMatch("/days/:year/:month");
+  const dayMatch = useMatch("/days/:year/:month");
   const monthMatch = useMatch("/months/:year");
   const yearMatch = useMatch("/years");
   const homeMatch = useMatch("/");
   return (
-    <AnimatePresence>
-    <Wrapper>
+    <>
+      {
+        !homeMatch ? <Overlay
+          layoutId="overlay"
+          onClick={onOverlayClicked}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        /> : null
+      }
       {
         homeMatch ?
-          <SelectedDate
-            whileHover={{ scale: 1.1 }}
-            layoutId='calendar'
-            onClick={() => onDateClicked(date.getFullYear(), date.getMonth() + 1)}
-          >
-            {dateSelect(date)}
-          </SelectedDate> : null
-      }
-      {
-        calMatch ?
-          <Days
-          />
+          <>
+            <SelectedDate
+              whileHover={{ scale: 1.1 }}
+              layoutId='calendar'
+              onClick={() => onDateClicked(date.getFullYear(), date.getMonth() + 1)}
+            >
+              {dateSelect(date)}
+            </SelectedDate>
+            <ToDos />
+          </>
           : null
       }
-      {
-        monthMatch ?
-          <Months />
-          : null
-      }
-      {
-        yearMatch ?
-          <Years />
-          : null
-      }
-
-    </Wrapper>
-    </AnimatePresence>
+      <AnimatePresence>
+        {
+          dayMatch ?
+            <Days />
+            : null
+        }
+      </AnimatePresence>
+      <AnimatePresence>
+        {
+          monthMatch ?
+            <Months />
+            : null
+        }
+      </AnimatePresence>
+      <AnimatePresence>
+        {
+          yearMatch ?
+            <Years />
+            : null
+        }
+      </AnimatePresence>
+    </>
   );
 }
 

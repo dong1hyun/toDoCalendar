@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import styled from "styled-components"
-import Days from './Routes/Components/Days';
+import Days from './Routes/Days';
 import Home from './Routes/Home';
 
 function App() {
