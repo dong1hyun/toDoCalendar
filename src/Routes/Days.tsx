@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from "react";
 import { useMatch, useNavigate, useParams } from "react-router-dom"
 import { useRecoilState } from "recoil";
 import { selectedDate } from "../atom";
 import CalendarWrapper from "./Components/Calendar";
+import Overlay from "./Components/Overlay";
 
 const Calendar = styled(motion.div)`
   display: grid;
@@ -68,11 +68,10 @@ function Days() {
   let curMonth = false; 
   return (
     <AnimatePresence>
+      <Overlay />
       <CalendarWrapper
         key={CalendarWrapper}
         layoutId='calendar'
-        transition={{ duration: "0.3" }}
-        exit={{scale:3, transition: { duration: 3} }}
       >
         <SelectedYM
           onClick={onYMClicked}
@@ -100,7 +99,7 @@ function Days() {
               else return <Day key={idx} style={{ opacity: 0.5, color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
             }
             else {
-              if(curMonth) return <Day onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer'}} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
+              if(curMonth) return <Day onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer'}}   whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
               else return <Day key={idx} style={{ opacity: 0.5}} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}>{i}</Day>
             }
           })}

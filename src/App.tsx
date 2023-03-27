@@ -1,18 +1,19 @@
-import { motion } from 'framer-motion';
-import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import styled from "styled-components"
-import Days from './Routes/Days';
+import AddToDos from "./Routes/AddCategory";
+import Days from "./Routes/Days";
 import Home from './Routes/Home';
+import Months from "./Routes/Months";
+import Years from "./Routes/Years";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/days/:year/:month" element={<Home />} />
-        <Route path="/months/:year" element={<Home />} />
-        <Route path="/years" element={<Home />} />
+        <Route path="/days/:year/:month" element={<Days />} />
+        <Route path="/months/:year" element={<Months />} />
+        <Route path="/years" element={<Years />} />
+        <Route path="/add" element={<AddToDos />} />
       </Routes>
     </Router>
   );

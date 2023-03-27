@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil";
 import { selectedDate } from "../atom";
 import CalendarWrapper from "./Components/Calendar";
+import Overlay from "./Components/Overlay";
 
 const Calendar = styled.div`
   display: grid;
@@ -38,6 +39,7 @@ function Months() {
     }
     return (
         <>
+            <Overlay />
             <CalendarWrapper layoutId="calendar">
                 <SelectedY
                     whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}

@@ -4,6 +4,7 @@ import { useRecoilState } from "recoil";
 import { selectedDate } from "../atom";
 import { useNavigate } from "react-router-dom";
 import CalendarWrapper from "./Components/Calendar";
+import Overlay from "./Components/Overlay";
 
 const Calendar = styled.div`
   display: grid;
@@ -40,6 +41,7 @@ function Years() {
     }
     return (
         <>
+            <Overlay />
             <CalendarWrapper layoutId="calendar">
                 <Calendar>
                     {setYears().map((i) => <Year

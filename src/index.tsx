@@ -57,9 +57,10 @@ table {
 body {
   font-weight: 300;
   font-family: 'Source Sans Pro', sans-serif;
-  background: linear-gradient(45deg, Violet, Orange);
+  background: linear-gradient(45deg, rgba(0, 168, 255,1.0),rgba(0, 210, 211,1.0));
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 a {
   text-decoration:none;
