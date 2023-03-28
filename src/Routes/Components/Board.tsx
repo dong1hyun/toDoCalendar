@@ -1,7 +1,8 @@
 import { Droppable } from "react-beautiful-dnd"
 import { useForm } from "react-hook-form";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { ITodo } from "../../atom";
+import { ITodo, toDoCategory } from "../../atom";
 import ToDo from "./ToDo"
 
 const Wrapper = styled.div`
@@ -33,6 +34,9 @@ const Form = styled.form`
     width: 100%;
     input {
         width: 100%;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 10px;
     }
 `
 
@@ -52,9 +56,22 @@ interface IForm {
 }
 
 function Board({ toDos, boardId }: IBoardProps) {
+    const setToDos = useSetRecoilState(toDoCategory);
     const { register, setValue, handleSubmit } = useForm<IForm>();
-    const onValid = (data: IForm) => {
-        console.log(data);
+    const onValid = ({ toDo }: IForm) => {
+        const newToDo = {
+            id: Date.now(),
+            text: toDo
+        }
+        setToDos(allBoards => {
+            return {
+                ...allBoards,
+                [boardId]: [
+                    ...allBoards[boardId],
+                    newToDo
+                ]
+            }
+        })
         setValue("toDo", "");
     }
     return (
@@ -68,7 +85,8 @@ function Board({ toDos, boardId }: IBoardProps) {
                 />
             </Form>
             <Droppable droppableId={boardId}>
-                {(magic, snapshot) => (
+                {(magic, snapshot) => {
+                    return(
                     <Area
                         ref={magic.innerRef}
                         {...magic.droppableProps}
@@ -85,7 +103,7 @@ function Board({ toDos, boardId }: IBoardProps) {
                         ))}
                         {magic.placeholder}
                     </Area>
-                )}
+                )}}
             </Droppable>
         </Wrapper>
     )

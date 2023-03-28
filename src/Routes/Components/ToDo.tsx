@@ -2,7 +2,7 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 
-const Card = styled.div<{isDragging:boolean}>`
+const Card = styled.div<ICardProp>`
   border-radius: 5px;
   margin-bottom: 5px;
   padding: 10px 10px;
@@ -13,6 +13,10 @@ interface IDragabbleCardProps {
   toDoId: number;
   toDoText: string;
   index: number;
+}
+
+interface ICardProp {
+  isDragging: boolean,
 }
 
 function DragabbleCard({ toDoId, toDoText, index }: IDragabbleCardProps) {

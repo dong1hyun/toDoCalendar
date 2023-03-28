@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from "styled-components"
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { useNavigate, useMatch } from "react-router-dom"
 import ToDos from './ToDos';
-import { selectedDate } from '../atom';
+import { selectedDate, toDoCategory } from '../atom';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+
 
 const SelectedDate = styled(motion.div)`
   cursor: pointer;
@@ -14,8 +16,18 @@ const SelectedDate = styled(motion.div)`
   left: 10px;
   display:inline-block;
 `;
+const Img = styled.img<{isDraggingOver:boolean}>`
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  bottom: 30px;
+  right: 30px;
+  scale: ${props => props.isDraggingOver ? "1.5" : null};
+  transition-duration: 0.5s;
+`
 function Home() {
   const [date, setDate] = useRecoilState(selectedDate);
+  const setToDos = useSetRecoilState(toDoCategory)
   const homeMatch = useMatch("/");
   const navigate = useNavigate();
   const onDateClicked = (year: number, month: number) => {
@@ -44,6 +56,48 @@ function Home() {
         return "토요일"
     }
   }
+  const onDragEnd = (info: DropResult) => {
+    const { destination, source } = info;
+    if(!destination) return;
+    if(destination.droppableId === "trashCan") {
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]];
+        boardCopy.splice(source.index, 1);
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy
+        }
+      })
+      return;
+    }
+    if (destination?.droppableId === source.droppableId) {
+        setToDos((allBoards) => {
+            const boardCopy = [...allBoards[source.droppableId]];
+            const taskObj = boardCopy[source.index];
+            boardCopy.splice(source.index, 1);
+            boardCopy.splice(destination?.index, 0, taskObj);
+            return {
+                ...allBoards,
+                [source.droppableId]: boardCopy
+            }
+        })
+    }
+    if(destination.droppableId !== source.droppableId) {
+        setToDos((allBoards) => {
+            const sourceCopy = [...allBoards[source.droppableId]];
+            const targetCopy = [...allBoards[destination.droppableId]]
+            const taskObj = sourceCopy[source.index];
+            sourceCopy.splice(source.index, 1);
+            targetCopy.splice(destination.index, 0, taskObj);
+            return {
+                ...allBoards,
+                [source.droppableId]: sourceCopy,
+                [destination.droppableId]: targetCopy
+            }
+        })
+    }
+
+};
   return (
     <>
       {
@@ -56,7 +110,20 @@ function Home() {
             >
               {dateSelect(date)}
             </SelectedDate>
+            <DragDropContext onDragEnd={onDragEnd}>
             <ToDos />
+            
+              <Droppable droppableId='trashCan'>
+                {(magic, snapshot) =>
+                    <Img
+                      ref={magic.innerRef}
+                      {...magic.droppableProps}
+                      isDraggingOver={snapshot.isDraggingOver}
+                      src={require('./trashCan.png')}
+                    />
+                }
+              </Droppable>
+            </DragDropContext>
           </>
           : null
       }

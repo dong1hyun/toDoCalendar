@@ -1,5 +1,4 @@
 import { motion } from "framer-motion"
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil";
 import styled from "styled-components"
@@ -9,7 +8,7 @@ import Board from "./Components/Board";
 const ToDoWrpper = styled(motion.div)`
   position: absolute;
   background-color: white;
-  width: 85%;
+  width: 80%;
   height: 550px;
   left: 0;
   right: 0;
@@ -25,7 +24,7 @@ const Add = styled(motion.span)`
   top: 10px;
   padding: 10px;
   border-top: 10px;
-  background-color: tomato;
+  background-color: rgba(7, 153, 146,1.0);
   border-radius: 10px;
 `
 const Boards = styled.div`
@@ -37,42 +36,12 @@ const Boards = styled.div`
 `;
 
 function ToDos() {
-    const [date, setDate] = useRecoilState(selectedDate);
     const [toDos, setToDos] = useRecoilState(toDoCategory);
     const navigate = useNavigate();
     const onAddClicked = () => {
         navigate("/add");
     }
 
-    const onDragEnd = (info: DropResult) => {
-        const { destination, source, draggableId } = info;
-        if(!destination) return;
-        if (destination?.droppableId === source.droppableId) {
-            setToDos((allBoards) => {
-                const boardCopy = [...allBoards[source.droppableId]];
-                boardCopy.splice(source.index, 1);
-                boardCopy.splice(destination?.index, 0, draggableId);
-                return {
-                    ...allBoards,
-                    [source.droppableId]: boardCopy
-                }
-            })
-        }
-        if(destination.droppableId !== source.droppableId) {
-            setToDos((allBoards) => {
-                const sourceCopy = [...allBoards[source.droppableId]];
-                const targetCopy = [...allBoards[destination.droppableId]]
-                sourceCopy.splice(source.index, 1);
-                targetCopy.splice(destination.index, 0, draggableId);
-                return {
-                    ...allBoards,
-                    [source.droppableId]: sourceCopy,
-                    [destination.droppableId]: targetCopy
-                }
-            })
-        }
-
-    };
     return (
         <ToDoWrpper
             initial={{ scale: 0 }}
@@ -81,15 +50,13 @@ function ToDos() {
             <Add
                 layoutId="todo"
                 onClick={onAddClicked}
-                whileHover={{ color: 'red' }}
+                whileHover={{ color: 'white' }}
             >
                 +추가
             </Add>
-            <DragDropContext onDragEnd={onDragEnd}>
                 <Boards>
                     {Object.keys(toDos).map(boardId => <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />)}
                 </Boards>
-            </DragDropContext>
         </ToDoWrpper>
     )
 }
