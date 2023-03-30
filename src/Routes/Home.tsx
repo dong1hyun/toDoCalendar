@@ -119,7 +119,7 @@ function Home() {
                       ref={magic.innerRef}
                       {...magic.droppableProps}
                       isDraggingOver={snapshot.isDraggingOver}
-                      src={require('./trashCan.png')}
+                      src={require('../images/trashCan.png')}
                     />
                 }
               </Droppable>

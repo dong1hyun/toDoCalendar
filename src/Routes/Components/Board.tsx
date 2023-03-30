@@ -16,12 +16,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const Title = styled.h2`
-  text-align: center;
-  font-weight: 600;
-  margin-bottom: 10px;
-  font-size: 18px;
-`;
+
 const Area = styled.div<IAreaProps>`
     background-color: ${props =>
         props.isDraggingOver ? "rgba(25, 42, 86,1.0)" :
@@ -39,7 +34,24 @@ const Form = styled.form`
         margin-bottom: 10px;
     }
 `
-
+const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+`
+const Title = styled.h2`
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 18px;
+  display: inline-block;
+`;
+const DelBtn = styled.img`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+`
+const Input = styled.input`
+    height: 20px;
+`
 
 interface IBoardProps {
     toDos: ITodo[];
@@ -74,36 +86,55 @@ function Board({ toDos, boardId }: IBoardProps) {
         })
         setValue("toDo", "");
     }
+    const onDelClicked = () => {
+        setToDos(allBoards => {
+            const boardCopy = {...allBoards}
+            delete boardCopy[boardId];
+            return {
+                ...boardCopy
+            }
+        });
+    }
     return (
         <Wrapper>
-            <Title>{boardId}</Title>
+            <Header>
+                <Title>{boardId}</Title>
+                <DelBtn 
+                onClick={onDelClicked}
+                src={require("../../images/deleteBtn.png")}
+                />
+            </Header>
+            
             <Form onSubmit={handleSubmit(onValid)}>
-                <input
+                <Input
                     {...register("toDo", { required: true })}
                     type="text"
                     placeholder={`Add task on ${boardId}`}
                 />
             </Form>
+            <hr />
             <Droppable droppableId={boardId}>
                 {(magic, snapshot) => {
-                    return(
-                    <Area
-                        ref={magic.innerRef}
-                        {...magic.droppableProps}
-                        isDraggingOver={snapshot.isDraggingOver}
-                        isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)}
-                    >
-                        {toDos.map((toDo, index) => (
-                            <ToDo
-                                key={toDo.id}
-                                index={index}
-                                toDoId={toDo.id}
-                                toDoText={toDo.text}
-                            />
-                        ))}
-                        {magic.placeholder}
-                    </Area>
-                )}}
+                    return (
+                        <Area
+                            ref={magic.innerRef}
+                            {...magic.droppableProps}
+                            isDraggingOver={snapshot.isDraggingOver}
+                            isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)}
+                        >
+                            {toDos.map((toDo, index) => (
+                                <ToDo
+                                    key={toDo.id}
+                                    index={index}
+                                    toDoId={toDo.id}
+                                    toDoText={toDo.text}
+                                    boardId={boardId}
+                                />
+                            ))}
+                            {magic.placeholder}
+                        </Area>
+                    )
+                }}
             </Droppable>
         </Wrapper>
     )

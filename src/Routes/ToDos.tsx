@@ -17,15 +17,13 @@ const ToDoWrpper = styled(motion.div)`
   border-radius: 10px;
   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 `
-const Add = styled(motion.span)`
+const Add = styled(motion.img)`
   position: absolute;
   cursor: pointer;
   right: 10px;
   top: 10px;
-  padding: 10px;
-  border-top: 10px;
-  background-color: rgba(7, 153, 146,1.0);
-  border-radius: 10px;
+  width: 50px;
+  height: 50px;
 `
 const Boards = styled.div`
   position: absolute;
@@ -50,10 +48,9 @@ function ToDos() {
             <Add
                 layoutId="todo"
                 onClick={onAddClicked}
-                whileHover={{ color: 'white' }}
-            >
-                +추가
-            </Add>
+                whileHover={{scale:1.2}} //한 번 실행 후 동작하지 않는 버그
+                src={require("../images/addBtn.png")}
+            />
                 <Boards>
                     {Object.keys(toDos).map(boardId => <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />)}
                 </Boards>
