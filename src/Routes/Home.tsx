@@ -1,10 +1,12 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import styled from "styled-components"
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useNavigate, useMatch } from "react-router-dom"
 import ToDos from './ToDos';
 import { selectedDate, toDoCategory } from '../atom';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import Login from "./Login";
+import Profile from './Components/Profile';
 
 
 const SelectedDate = styled(motion.div)`
@@ -26,6 +28,7 @@ const Img = styled.img<{isDraggingOver:boolean}>`
   transition-duration: 0.5s;
 `
 function Home() {
+  console.log(process.env.REACT_APP_REST_API_KEY);
   const [date, setDate] = useRecoilState(selectedDate);
   const setToDos = useSetRecoilState(toDoCategory)
   const homeMatch = useMatch("/");
@@ -96,13 +99,18 @@ function Home() {
             }
         })
     }
+    
 
 };
   return (
     <>
-      {
+    
+    <Login />
+    <Profile />
+      {/* {
         homeMatch ?
           <>
+            <Profile />
             <SelectedDate
               whileHover={{ scale: 1.1 }} //한 번 클릭한 후에 whileHover={{ scale: 1.1 }}이 작동하지 않는 현상 발견
               layoutId='calendar'
@@ -112,7 +120,6 @@ function Home() {
             </SelectedDate>
             <DragDropContext onDragEnd={onDragEnd}>
             <ToDos />
-            
               <Droppable droppableId='trashCan'>
                 {(magic, snapshot) =>
                     <Img
@@ -126,7 +133,7 @@ function Home() {
             </DragDropContext>
           </>
           : null
-      }
+      } */}
     </>
   );
 }
