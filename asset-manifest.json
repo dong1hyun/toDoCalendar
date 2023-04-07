@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/static/js/main.16437397.js",
-    "static/media/trashCan.png": "/static/media/trashCan.816c498424783bf33f36.png",
-    "static/media/addBtn.png": "/static/media/addBtn.a905cf7187db2d262017.png",
-    "static/media/deleteBtn.png": "/static/media/deleteBtn.188720608dcbabe706b2.png",
-    "index.html": "/index.html",
-    "main.16437397.js.map": "/static/js/main.16437397.js.map"
+    "main.js": "/toDoCalendar/static/js/main.0818bfa8.js",
+    "static/media/trashCan.png": "/toDoCalendar/static/media/trashCan.816c498424783bf33f36.png",
+    "static/media/addBtn.png": "/toDoCalendar/static/media/addBtn.a905cf7187db2d262017.png",
+    "static/media/deleteBtn.png": "/toDoCalendar/static/media/deleteBtn.188720608dcbabe706b2.png",
+    "index.html": "/toDoCalendar/index.html",
+    "main.0818bfa8.js.map": "/toDoCalendar/static/js/main.0818bfa8.js.map"
   },
   "entrypoints": [
-    "static/js/main.16437397.js"
+    "static/js/main.0818bfa8.js"
   ]
 }
