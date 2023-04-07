@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
-import { useRecoilState } from "recoil";
+import { RecoilState, useRecoilState } from "recoil";
 import styled from "styled-components"
 import { selectedDate, toDoCategory } from "../atom";
 import Board from "./Components/Board";
@@ -35,11 +36,22 @@ const Boards = styled.div`
 
 function ToDos() {
     const [toDos, setToDos] = useRecoilState(toDoCategory);
+    const [date, setDate] = useRecoilState(selectedDate);
     const navigate = useNavigate();
     const onAddClicked = () => {
         navigate("/add");
     }
-
+    const month = date.getMonth() + 1;
+    const curDate = "" + date.getFullYear() + month + date.getDate();
+    const curToDos = toDos[curDate];
+    if (!curToDos) {
+        setToDos(allBoards => {
+            return {
+                ...allBoards,
+                [curDate]: {}
+            }
+        });
+    }
     return (
         <ToDoWrpper
             initial={{ scale: 0 }}
@@ -52,7 +64,7 @@ function ToDos() {
                 src={require("../images/addBtn.png")}
             />
                 <Boards>
-                    {Object.keys(toDos).map(boardId => <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />)}
+                    {curToDos ? Object.keys(curToDos).map(boardId => <Board boardId={boardId} key={boardId} toDos={curToDos[boardId]} />) : "Loading"}
                 </Boards>
         </ToDoWrpper>
     )

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoCategory } from "../atom";
+import { selectedDate, toDoCategory } from "../atom";
 import Overlay from "./Components/Overlay";
 
 const Wrapper = styled(motion.div)`
@@ -45,6 +45,9 @@ interface IForm {
 }
 
 function AddCategory() {
+    const [date, setDate] = useRecoilState(selectedDate);
+    const month = date.getMonth() + 1;
+    const curDate = "" + date.getFullYear() + month + date.getDate();
     const [toDos, setToDos] = useRecoilState(toDoCategory);
     const navigate = useNavigate();
     const {
@@ -53,15 +56,27 @@ function AddCategory() {
         setValue
     } = useForm<IForm>()
     const onValid = ({ category }: IForm) => {
-        if(Object.keys(toDos).length === 3) {
+        if(category.length > 10) {
+            alert("최대 10자까지만 가능합니다.");
+            return;
+        }
+        if(Object.keys(toDos[curDate]).length === 3) {
             alert("카테고리는 최대 3개까지 만들 수 있습니다.");
             navigate('/');
             return;
         }
-        const boardCopy = {...toDos};
-        boardCopy[category] = [];
-        setToDos(boardCopy);
-        setValue("category", "");
+        setToDos(allBoards => {
+            const result = 
+            {
+                ...allBoards,
+                [curDate]:{
+                    ...allBoards[curDate],
+                    [category]: []
+                }
+            }
+            localStorage.setItem('toDoList', JSON.stringify(result));
+            return result
+        });
         navigate('/');
     }
     return (

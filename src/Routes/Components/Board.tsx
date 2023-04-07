@@ -1,8 +1,8 @@
 import { Droppable } from "react-beautiful-dnd"
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { ITodo, toDoCategory } from "../../atom";
+import { ITodo, selectedDate, toDoCategory } from "../../atom";
 import ToDo from "./ToDo"
 
 const Wrapper = styled.div`
@@ -68,6 +68,9 @@ interface IForm {
 }
 
 function Board({ toDos, boardId }: IBoardProps) {
+    const [date, setDate] = useRecoilState(selectedDate);
+    const month = date.getMonth() + 1;
+    const curDate = "" + date.getFullYear() + month + date.getDate();
     const setToDos = useSetRecoilState(toDoCategory);
     const { register, setValue, handleSubmit } = useForm<IForm>();
     const onValid = ({ toDo }: IForm) => {
@@ -78,33 +81,37 @@ function Board({ toDos, boardId }: IBoardProps) {
         setToDos(allBoards => {
             return {
                 ...allBoards,
+                [curDate]:{
+                ...allBoards[curDate],
                 [boardId]: [
-                    ...allBoards[boardId],
+                    ...allBoards[curDate][boardId],
                     newToDo
-                ]
+                ]}
             }
         })
         setValue("toDo", "");
     }
     const onDelClicked = () => {
         setToDos(allBoards => {
-            const boardCopy = {...allBoards}
+            const boardCopy = { ...allBoards[curDate] }
             delete boardCopy[boardId];
             return {
+                ...allBoards,
+                [curDate]:{
                 ...boardCopy
-            }
+            }}
         });
     }
     return (
         <Wrapper>
             <Header>
                 <Title>{boardId}</Title>
-                <DelBtn 
-                onClick={onDelClicked}
-                src={require("../../images/deleteBtn.png")}
+                <DelBtn
+                    onClick={onDelClicked}
+                    src={require("../../images/deleteBtn.png")}
                 />
             </Header>
-            
+
             <Form onSubmit={handleSubmit(onValid)}>
                 <Input
                     {...register("toDo", { required: true })}

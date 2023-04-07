@@ -2,7 +2,7 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoCategory } from "../../atom";
+import { selectedDate, toDoCategory } from "../../atom";
 
 const Card = styled.div<ICardProp>`
   position: relative;
@@ -31,15 +31,19 @@ interface ICardProp {
 }
 
 function DragabbleCard({ toDoId, toDoText, index, boardId }: IDragabbleCardProps) {
+  const [date, setDate] = useRecoilState(selectedDate);
+  const month = date.getMonth() + 1;
+  const curDate = "" + date.getFullYear() + month + date.getDate();
   const [toDos, setToDos] = useRecoilState(toDoCategory);
   const onDelClicked = () => {
     setToDos(allBoards => {
-      const boardCopy = [...allBoards[boardId]];
+      const boardCopy = [...allBoards[curDate][boardId]];
       boardCopy.splice(index, 1);
       return {
-        ...allBoards,
+        [curDate]:{
+        ...allBoards[curDate],
         [boardId]:boardCopy
-      }
+      }}
     })
   }
   return (

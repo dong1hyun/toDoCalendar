@@ -5,8 +5,7 @@ import { useNavigate, useMatch } from "react-router-dom"
 import ToDos from './ToDos';
 import { selectedDate, toDoCategory } from '../atom';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
-import Login from "./Login";
-import Profile from './Components/Profile';
+import { useEffect } from 'react';
 
 
 const SelectedDate = styled(motion.div)`
@@ -18,7 +17,7 @@ const SelectedDate = styled(motion.div)`
   left: 10px;
   display:inline-block;
 `;
-const Img = styled.img<{isDraggingOver:boolean}>`
+const Img = styled.img<{ isDraggingOver: boolean }>`
   position: absolute;
   width: 50px;
   height: 50px;
@@ -28,11 +27,12 @@ const Img = styled.img<{isDraggingOver:boolean}>`
   transition-duration: 0.5s;
 `
 function Home() {
-  console.log(process.env.REACT_APP_REST_API_KEY);
   const [date, setDate] = useRecoilState(selectedDate);
-  const setToDos = useSetRecoilState(toDoCategory)
+  const [toDos, setToDos] = useRecoilState(toDoCategory);
   const homeMatch = useMatch("/");
   const navigate = useNavigate();
+  const month = date.getMonth() + 1;
+  const curDate = "" + date.getFullYear() + month + date.getDate();
   const onDateClicked = (year: number, month: number) => {
     navigate(`/days/${year}/${month}`);
   };
@@ -61,56 +61,67 @@ function Home() {
   }
   const onDragEnd = (info: DropResult) => {
     const { destination, source } = info;
-    if(!destination) return;
-    if(destination.droppableId === "trashCan") {
+    if (!destination) return;
+    if (destination.droppableId === "trashCan") {
       setToDos((allBoards) => {
-        const boardCopy = [...allBoards[source.droppableId]];
+        const boardCopy = [...allBoards[curDate][source.droppableId]];
         boardCopy.splice(source.index, 1);
         return {
-          ...allBoards,
-          [source.droppableId]: boardCopy
-        }
+          [curDate]: {
+            ...allBoards[curDate],
+            [source.droppableId]: boardCopy
+          }}
       })
       return;
     }
     if (destination?.droppableId === source.droppableId) {
-        setToDos((allBoards) => {
-            const boardCopy = [...allBoards[source.droppableId]];
-            const taskObj = boardCopy[source.index];
-            boardCopy.splice(source.index, 1);
-            boardCopy.splice(destination?.index, 0, taskObj);
-            return {
-                ...allBoards,
-                [source.droppableId]: boardCopy
-            }
-        })
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[curDate][source.droppableId]];
+        const taskObj = boardCopy[source.index];
+        boardCopy.splice(source.index, 1);
+        boardCopy.splice(destination?.index, 0, taskObj);
+        return {
+          [curDate]: {
+          ...allBoards[curDate],
+          [source.droppableId]: boardCopy
+        }}
+      })
     }
-    if(destination.droppableId !== source.droppableId) {
-        setToDos((allBoards) => {
-            const sourceCopy = [...allBoards[source.droppableId]];
-            const targetCopy = [...allBoards[destination.droppableId]]
-            const taskObj = sourceCopy[source.index];
-            sourceCopy.splice(source.index, 1);
-            targetCopy.splice(destination.index, 0, taskObj);
-            return {
-                ...allBoards,
-                [source.droppableId]: sourceCopy,
-                [destination.droppableId]: targetCopy
-            }
-        })
+    if (destination.droppableId !== source.droppableId) {
+      setToDos((allBoards) => {
+        const sourceCopy = [...allBoards[curDate][source.droppableId]];
+        const targetCopy = [...allBoards[curDate][destination.droppableId]]
+        const taskObj = sourceCopy[source.index];
+        sourceCopy.splice(source.index, 1);
+        targetCopy.splice(destination.index, 0, taskObj);
+        return {
+          [curDate]: {
+          ...allBoards[curDate],
+          [source.droppableId]: sourceCopy,
+          [destination.droppableId]: targetCopy
+        }}
+      })
     }
-    
+  };
 
-};
+  useEffect(() => {
+    const JtoDos = localStorage.getItem('toDoList');
+    if (JtoDos !== null && typeof (JtoDos) === "string") {
+      setToDos(JSON.parse(JtoDos));
+      // console.log("updated");
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('toDoList', JSON.stringify(toDos));
+    // console.log("saved");
+  }, [toDos]);
+
   return (
     <>
-    
-    <Login />
-    <Profile />
-      {/* {
+      {
         homeMatch ?
           <>
-            <Profile />
             <SelectedDate
               whileHover={{ scale: 1.1 }} //한 번 클릭한 후에 whileHover={{ scale: 1.1 }}이 작동하지 않는 현상 발견
               layoutId='calendar'
@@ -119,21 +130,21 @@ function Home() {
               {dateSelect(date)}
             </SelectedDate>
             <DragDropContext onDragEnd={onDragEnd}>
-            <ToDos />
+              <ToDos />
               <Droppable droppableId='trashCan'>
                 {(magic, snapshot) =>
-                    <Img
-                      ref={magic.innerRef}
-                      {...magic.droppableProps}
-                      isDraggingOver={snapshot.isDraggingOver}
-                      src={require('../images/trashCan.png')}
-                    />
+                  <Img
+                    ref={magic.innerRef}
+                    {...magic.droppableProps}
+                    isDraggingOver={snapshot.isDraggingOver}
+                    src={require('../images/trashCan.png')}
+                  />
                 }
               </Droppable>
             </DragDropContext>
           </>
           : null
-      } */}
+      }
     </>
   );
 }
