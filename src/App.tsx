@@ -7,7 +7,7 @@ import Years from "./Routes/Years";
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/days/:year/:month" element={<Days />} />

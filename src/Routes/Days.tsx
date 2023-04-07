@@ -22,7 +22,6 @@ const DayWrapper = styled(motion.div)`
   justify-content: space-around;
 `
 const Day = styled.div`
-  
 `
 const PlanWrapper = styled.div`
   display: flex;
@@ -32,6 +31,8 @@ const Plan = styled.div`
   font-size: 10px;
   border-radius: 5px;
   background-color: white;
+  margin-bottom: 1px;
+  padding: 1px;
 `
 const Dow = styled.span` //day of the week(요일)
   margin-bottom: 30px;
@@ -118,7 +119,7 @@ function Days() {
             if(idx == start || idx == end) {
               curMonth = !curMonth;
             }
-            let curDate;
+            let curDate: string;
             let month;
             if(idx < start) {
               month = currMonth - 1;
@@ -133,19 +134,27 @@ function Days() {
               curDate = "" + date.getFullYear() + month + i;
             }
             if(toDos[curDate] && Object.keys(toDos[curDate]).length > 0) {
-              Object.keys(toDos[curDate]).map(i => plan += (i + '`'));
+              Object.keys(toDos[curDate]).map((i, idx) => {
+                if(Object.keys(toDos[curDate]).length - 1 == idx) {
+                  plan += i;
+                }
+                else {
+                  plan += (i + '`');
+                }
+              });
             } 
+            console.log(plan.split('`'));
             if (idx % 7 == 0) {
-              if(curMonth) return <DayWrapper onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer', color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan.split('`').map(i => <Plan key={i}>{i}</Plan>)}</PlanWrapper></DayWrapper>
-              else return <DayWrapper key={idx} style={{ opacity: 0.5, color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan.split('`').map(i => <Plan key={i}>{i}</Plan>)}</PlanWrapper></DayWrapper>
+              if(curMonth) return <DayWrapper onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer', color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>
+              else return <DayWrapper key={idx} style={{ opacity: 0.5, color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>
             }
             else if ((1 + idx) % 7 == 0) {
-              if(curMonth) return <DayWrapper onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer', color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan.split('`').map(i => <Plan key={i}>{i}</Plan>)}</PlanWrapper></DayWrapper>
-              else return <DayWrapper key={idx} style={{ opacity: 0.5, color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan.split('`').map(i => <Plan key={i}>{i}</Plan>)}</PlanWrapper></DayWrapper>
+              if(curMonth) return <DayWrapper onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer', color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>
+              else return <DayWrapper key={idx} style={{ opacity: 0.5, color: "blue" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>
             }
             else {
-              if(curMonth) return <DayWrapper onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer'}}   whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan.split('`').map(i => <Plan key={i}>{i}</Plan>)}</PlanWrapper></DayWrapper>
-              else return <DayWrapper key={idx} style={{ opacity: 0.5}} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan.split('`').map(i => <Plan key={i}>{i}</Plan>)}</PlanWrapper></DayWrapper>
+              if(curMonth) return <DayWrapper onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer'}}   whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>
+              else return <DayWrapper key={idx} style={{ opacity: 0.5}} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>
             }
           })}
         </Calendar>
