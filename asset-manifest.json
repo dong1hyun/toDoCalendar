@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/toDoCalendar/static/js/main.0e5c62e1.js",
+    "main.js": "/toDoCalendar/static/js/main.cb824a4c.js",
     "static/media/trashCan.png": "/toDoCalendar/static/media/trashCan.816c498424783bf33f36.png",
     "static/media/addBtn.png": "/toDoCalendar/static/media/addBtn.a905cf7187db2d262017.png",
     "static/media/deleteBtn.png": "/toDoCalendar/static/media/deleteBtn.188720608dcbabe706b2.png",
     "index.html": "/toDoCalendar/index.html",
-    "main.0e5c62e1.js.map": "/toDoCalendar/static/js/main.0e5c62e1.js.map"
+    "main.cb824a4c.js.map": "/toDoCalendar/static/js/main.cb824a4c.js.map"
   },
   "entrypoints": [
-    "static/js/main.0e5c62e1.js"
+    "static/js/main.cb824a4c.js"
   ]
 }
