@@ -10,11 +10,16 @@ const Wrapper = styled.div`
   padding-top: 30px;
   border-radius: 5px;
   min-height: 200px;
+  min-width: 350px;
   background-color: rgba(37, 204, 247,1.0);
   margin: 20px;
   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
   display: flex;
   flex-direction: column;
+  -ms-overflow-style: none; /* IE and Edge */
+  @media screen and (max-width: 500px) {
+    min-width: 200px;
+  }
 `;
 
 const Area = styled.div<IAreaProps>`
@@ -73,7 +78,7 @@ function Board({ toDos, boardId }: IBoardProps) {
     const curDate = "" + date.getFullYear() + month + date.getDate();
     const setToDos = useSetRecoilState(toDoCategory);
     const { register, setValue, handleSubmit } = useForm<IForm>();
-    const onValid = ({ toDo }: IForm) => {
+    const onValid = ({ toDo }: IForm) => { //새로운 toDo가 입력됐을 때
         const newToDo = {
             id: Date.now(),
             text: toDo
@@ -91,7 +96,7 @@ function Board({ toDos, boardId }: IBoardProps) {
         })
         setValue("toDo", "");
     }
-    const onDelClicked = () => {
+    const onDelClicked = () => { //toDo 제거
         setToDos(allBoards => {
             const boardCopy = { ...allBoards[curDate] }
             delete boardCopy[boardId];
@@ -119,7 +124,6 @@ function Board({ toDos, boardId }: IBoardProps) {
                     placeholder={`Add task on ${boardId}`}
                 />
             </Form>
-            <hr />
             <Droppable droppableId={boardId}>
                 {(magic, snapshot) => {
                     return (

@@ -10,20 +10,23 @@ const Wrapper = styled(motion.div)`
   position: absolute;
   padding: 10px;
   width: 500px;
-  height: 320px;
+  height: 200px;
   border-radius: 10px;
   top: 150px;
   left: 0;
   right: 0;
   margin: 0 auto;
   background-color: rgba(206, 214, 224,1.0);
+  @media screen and (max-width: 500px) {
+    width: 250px;
+  }
 `;
 const Input = styled.input`
     position: absolute;
     top: 30%;
     font-size: 30px;
     width: 80%;
-    height: 30%;
+    height: 50%;
     border: none;
     border-radius: 10px;
     left: 0; 

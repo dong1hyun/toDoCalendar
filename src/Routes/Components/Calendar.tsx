@@ -12,6 +12,12 @@ const CalendarWrapper = styled(motion.div)`
   right: 0;
   margin: 0 auto;
   background-color: rgba(206, 214, 224,1.0);
+  @media screen and (max-width: 500px) {
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    overflow: scroll;
+  }
 `;
 
 export default CalendarWrapper;

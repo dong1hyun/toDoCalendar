@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import styled from "styled-components"
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { useNavigate, useMatch } from "react-router-dom"
 import ToDos from './ToDos';
 import { selectedDate, toDoCategory } from '../atom';
@@ -16,13 +16,17 @@ const SelectedDate = styled(motion.div)`
   top: 10px;
   left: 10px;
   display:inline-block;
+  @media screen and (max-width: 500px) {
+    font-size: 28px;
+  }
+  
 `;
-const Img = styled.img<{ isDraggingOver: boolean }>`
+const TrashCan = styled.img<{ isDraggingOver: boolean }>`
   position: absolute;
   width: 50px;
   height: 50px;
-  bottom: 30px;
-  right: 30px;
+  bottom: 10%;
+  right: 10%;
   scale: ${props => props.isDraggingOver ? "1.5" : null};
   transition-duration: 0.5s;
 `
@@ -36,7 +40,7 @@ function Home() {
   const onDateClicked = (year: number, month: number) => {
     navigate(`/days/${year}/${month}`);
   };
-  const dateSelect = (date: any) => {
+  const dateSelect = (date: any) => { //현재 선택한 날짜를 보여줌
     let month = date.getMonth() + 1;
     let selectedDate = date.getFullYear() + '-' + month + '-' + date.getDate() + '-' + getDay(date.getDay());
     return selectedDate;
@@ -59,7 +63,7 @@ function Home() {
         return "토요일"
     }
   }
-  const onDragEnd = (info: DropResult) => {
+  const onDragEnd = (info: DropResult) => {  //드래그가 완료됐을 때 실행
     const { destination, source } = info;
     if (!destination) return;
     if (destination.droppableId === "trashCan") {
@@ -104,17 +108,15 @@ function Home() {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {  //localstorage에서 가져옴
     const JtoDos = localStorage.getItem('toDoList');
     if (JtoDos !== null && typeof (JtoDos) === "string") {
       setToDos(JSON.parse(JtoDos));
-      // console.log("updated");
     }
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {  //toDo들을 localstorage에 저장
     localStorage.setItem('toDoList', JSON.stringify(toDos));
-    // console.log("saved");
   }, [toDos]);
 
   return (
@@ -133,7 +135,7 @@ function Home() {
               <ToDos />
               <Droppable droppableId='trashCan'>
                 {(magic, snapshot) =>
-                  <Img
+                  <TrashCan
                     ref={magic.innerRef}
                     {...magic.droppableProps}
                     isDraggingOver={snapshot.isDraggingOver}

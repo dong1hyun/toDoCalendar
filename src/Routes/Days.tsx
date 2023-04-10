@@ -62,7 +62,7 @@ function Days() {
   }, []);
   let start:number;
   let end:number;
-  const setCalendar = () => {
+  const setCalendar = () => {  //현재 선택한 연도, 달의 일들을 구해서 배열 형태로 리턴
     const curMonth = new Date(currYear, currMonth, 0); //현재 달의 마지막 날짜 구하는 용도
     const curMonth2 = new Date(currYear, currMonth - 1, 1); //현재 달의 시작 요일 구하는 용도
     const preMonth = new Date(currYear, currMonth - 1, 0); //전 달의 마지막 날짜 구하는 용도
@@ -114,7 +114,6 @@ function Days() {
           <Dow>금</Dow>
           <Dow style={{ color: "blue" }}>토</Dow>
           {setCalendar().map((i, idx) => { 
-            
             let plan = '';
             if(idx == start || idx == end) {
               curMonth = !curMonth;
@@ -143,7 +142,6 @@ function Days() {
                 }
               });
             } 
-            console.log(plan.split('`'));
             if (idx % 7 == 0) {
               if(curMonth) return <DayWrapper onClick={() => onDayClicked(i)} key={idx} style={{ cursor: 'pointer', color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>
               else return <DayWrapper key={idx} style={{ opacity: 0.5, color: "red" }} whileHover={{ backgroundColor: "rgba(164, 176, 190,1.0)" }}><Day>{i}</Day><PlanWrapper>{plan != '' ? plan.split('`').map(i => <Plan key={i}>{i}</Plan>) : null}</PlanWrapper></DayWrapper>

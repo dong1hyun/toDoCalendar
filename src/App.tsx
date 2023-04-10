@@ -5,11 +5,12 @@ import Home from './Routes/Home';
 import Months from "./Routes/Months";
 import Years from "./Routes/Years";
 
+//<Route path={`${process.env.PUBLIC_URL}/`} element={<Home />} />
 function App() {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path='/' element={<Home />} />
         <Route path="/days/:year/:month" element={<Days />} />
         <Route path="/months/:year" element={<Months />} />
         <Route path="/years" element={<Years />} />

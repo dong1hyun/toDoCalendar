@@ -61,6 +61,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  -ms-overflow-style: none;
 }
 a {
   text-decoration:none;
