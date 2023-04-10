@@ -4,7 +4,6 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components"
 import { selectedDate, toDoCategory } from "../atom";
 import Board from "./Components/Board";
-import { useEffect } from 'react';
 
 const ToDoWrpper = styled(motion.div)`
   position: absolute;

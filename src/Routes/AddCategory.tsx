@@ -33,15 +33,7 @@ const Input = styled.input`
     right: 0; 
     margin: 0 auto;
 `
-const ComBtn = styled(motion.img)`
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    left: 0; 
-    right: 0; 
-    bottom: 25px;
-    margin: 0 auto;
-`
+
 
 interface IForm {
     category: string
@@ -92,9 +84,6 @@ function AddCategory() {
                     {...register("category", {required: true})} 
                     type="text" 
                     />
-                
-                {/* <button style={{backgroundImage:URL("../images/completeBtn.png")}}>
-                </button> */}
                 </form>
             </Wrapper>
         </>
